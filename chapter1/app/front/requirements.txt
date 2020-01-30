@@ -19,5 +19,5 @@ query-string==1.0.2
 requests==2.20.1
 six==1.11.0
 SQLAlchemy==1.2.14
-urllib3==1.24.1
+urllib3==1.24.2
 Werkzeug==0.14.1
