@@ -1,0 +1,52 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: quotes-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: back
+  namespace: istio-system
+spec:
+  gateways:
+    - quotes-gateway
+  hosts:
+    - "*"
+  http:
+  - route:
+    - destination:
+        host: back-service.default.svc.cluster.local
+        subset: v1
+      weight: 90
+    - destination:
+        host: back-service.default.svc.cluster.local
+        subset: v2
+      weight: 10
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: back
+  namespace: istio-system
+spec:
+  host: back-service.default.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2

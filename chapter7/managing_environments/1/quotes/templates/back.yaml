@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  name: "{{ .Values.back.name }}"
+spec:
+  replicas: {{ .Values.back.replicaCount }}
+  selector:
+    matchLabels:
+      app: "{{ .Values.back.name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.back.name }}"
+    spec:
+      containers:
+      - image: "{{ .Values.back.container.image }}"
+        name: "{{ .Values.back.container.name }}"
+        ports:
+        - containerPort: {{ .Values.back.container.port.number }}
+          name: "{{ .Values.back.container.port.name }}"
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.data.name }}-secret"
+              key: mysql_password
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "mysql+pymysql://{{ .Values.back.mysql.user }}:$MYSQL_PASSWORD@{{ .Values.data.name }}:{{ .Values.back.mysql.port  }}/{{ .Values.back.mysql.database  }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.back.service.name }}
+spec:
+  ports:
+  {{- range .Values.back.service.ports }}
+  - port: {{ .port }}
+    protocol: {{ .protocol }}
+    targetPort: {{ .targetPort}}
+    nodePort: {{ .nodePort }}
+  {{- end }}
+  selector:
+    app: {{ .Values.back.name }}
+  type: LoadBalancer

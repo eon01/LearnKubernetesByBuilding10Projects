@@ -1,0 +1,44 @@
+version: "3"
+services:
+
+  front:
+    build:
+      context: front
+      dockerfile: Dockerfile
+    volumes:
+      - ./front/:/app
+    ports:
+      - "3001:3001"
+    networks:
+      - myapp
+
+  back:
+    container_name: api
+    build:
+      context: back
+      dockerfile: Dockerfile
+    volumes:
+      - ./back/:/app
+    ports:
+      - "3000:3000"
+    networks:
+      - myapp
+
+  data:
+    build:
+      context: data
+      dockerfile: Dockerfile
+    volumes:
+      - ./data/mydatabase.sql:/tmp/mydatabase.sql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "mydatabase"
+      MYSQL_PASSWORD: "root"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - myapp
+
+networks:
+  myapp:

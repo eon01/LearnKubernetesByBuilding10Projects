@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  name: "{{ .Values.back.name }}"
+spec:
+  replicas: {{ .Values.back.replicaCount }}
+  selector:
+    matchLabels:
+      app: "{{ .Values.back.name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.back.name }}"
+    spec:
+      containers:
+      - image: "{{ .Values.back.container.image }}"
+        name: "{{ .Values.back.container.name }}"
+        ports:
+        - containerPort: {{ .Values.back.container.port.number }}
+          name: "{{ .Values.back.container.port.name }}"
+        env:
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "mysql+pymysql://{{ .Values.back.mysql.user }}:{{ .Values.back.mysql.password  }}@{{ .Values.data.name }}:{{ .Values.back.mysql.port  }}/{{ .Values.back.mysql.database  }}"
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: {{ .Values.back.service.name }}
+# spec:
+#   ports:
+#   {{- range .Values.back.service.ports }}
+#   - port: {{ .port }}
+#     protocol: {{ .protocol }}
+#     targetPort: {{ .targetPort}}
+#     nodePort: {{ .nodePort }}
+#   {{- end }}
+#   selector:
+#     app: {{ .Values.back.name }}
+#   type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.back.service.name }}
+  labels:
+spec:
+  ports:
+  {{- range .Values.back.service.ports }}
+  - port: {{ .port }}
+    targetPort: {{ .targetPort }}
+    protocol: {{ .protocol }}
+  {{- end }}
+  selector:
+    app: {{ .Values.back.name }}
+  type: NodePort

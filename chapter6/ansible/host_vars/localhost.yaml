@@ -1,0 +1,8 @@
+---
+my_var: my_value
+
+other_variables:
+  production:
+    my_var: production_value
+  testing:
+    my_var: testing_value

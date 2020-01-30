@@ -1,0 +1,10 @@
+credentials = "auth/serviceaccount.json"
+project = "mykubernetesproject-002"
+region = "europe-west1"
+cluster_name = "my-testing-cluster"
+network = "default"
+initial_node_count = 1
+node_name = "my-node-pool"
+node_count = 2
+preemptible = true
+machine_type = "f1-micro"

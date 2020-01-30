@@ -1,0 +1,24 @@
+dependencies:
+  api:
+    sha: e1a1952e5b81ed914b06c1814fd3a0c92c750e37
+  client-go:
+    sha: 26c62a04cdbc1fb52dd71a9194b0d49ce297e836
+  cni:
+    sha: 367150f4bbe2c60911baedf30f8335b5f9bfd537
+  gogo-genproto:
+    sha: f7d19ec0141d49ac9efc83b5e61fa81ba103b445
+  istio:
+    sha: 35eb9dc7c6e78dac5bd8c3d142bc2a4601616932
+  operator:
+    sha: 2689e5c3357f5d873f5c2a3426d6fdf41f1e7105
+  pkg:
+    sha: 10d06b6b315ef0014b7f5498fa65d77faab692a9
+  proxy:
+    sha: a7b2578494d79fe098f0e99282e0236946562fa0
+  test-infra:
+    sha: 89536333dc6001d268f101a1b2c0ce197b1875b3
+  tools:
+    sha: e20988d0c8535976b014e8bd995f3453268fd6ed
+docker: docker.io/istio
+proxyOverride: https://storage.googleapis.com/istio-private-build/proxy
+version: 1.4.2

@@ -1,0 +1,3 @@
+- copy:
+    content: "success"
+    dest: /tmp/test.txt

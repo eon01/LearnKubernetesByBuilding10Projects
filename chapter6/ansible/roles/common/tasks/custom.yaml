@@ -1,0 +1,3 @@
+- copy:
+    content: "{{ my_var }}"
+    dest: /tmp/custom.txt

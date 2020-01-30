@@ -1,0 +1,10 @@
+credentials = "auth/serviceaccount.json"
+project = "mykubernetesproject-002"
+region = "europe-west1"
+cluster_name = "my-production-cluster"
+network = "default"
+initial_node_count = 1
+node_name = "my-node-pool"
+node_count = 3
+preemptible = false
+machine_type = "n1-standard-1

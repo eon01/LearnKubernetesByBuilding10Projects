@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.name }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.global_static_ip_name | quote }}
+spec:
+  rules:
+  {{- range .Values.ingress.spec.rules }}
+  - host:  {{ .host }}
+    http:
+      paths:
+      {{- range .http.paths }}
+      - path: {{ .path }}
+        backend:
+          serviceName: {{ .backend.serviceName }}
+          servicePort: {{ .backend.servicePort }}
+      {{- end }}
+  {{- end }}

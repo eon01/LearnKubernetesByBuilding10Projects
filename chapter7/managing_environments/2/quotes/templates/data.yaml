@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.data.pvc.name }}
+  labels:
+    app: {{ .Values.data.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      {{- template "quotes.mysql_disk_size" .}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.data.service.name }}
+  labels:
+    app: {{ .Values.data.name }}
+spec:
+  ports:
+    - port: {{ .Values.data.service.port }}
+  selector:
+    app: {{ .Values.data.name }}
+  clusterIP: {{ .Values.data.service.clusterIP }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  name: "{{ .Values.data.name }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ .Values.data.name }}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.data.name }}"
+    spec:
+      containers:
+      - image: "{{ .Values.data.container.image }}"
+        name: "{{ .Values.data.container.name }}"
+        env:
+        {{- range .Values.data.container.env }}
+        - name: {{ .name }}
+          value: "{{ .value }}"
+        {{- end }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.data.name }}-secret"
+              key: mysql_password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.data.name }}-secret"
+              key: mysql_root_password
+        ports:
+        - containerPort: {{ .Values.data.container.port.containerPort }}
+          name: "{{ .Values.data.container.port.name }}"
+        volumeMounts:
+        - name: "{{ .Values.data.container.volumeMounts.name }}"
+          mountPath: "{{ .Values.data.container.volumeMounts.mountPath }}"
+          subPath: "{{ .Values.data.container.volumeMounts.subPath }}"
+      volumes:
+      - name: "{{ .Values.data.container.volume.name }}"
+        persistentVolumeClaim:
+          claimName: {{ .Values.data.pvc.name }}

@@ -1,0 +1,53 @@
+# global:
+#   env: "prod"
+
+back:
+  replicaCount: 1
+  name: back
+  container:
+    image: eon01/quotes-back:v1
+    name: api
+    port:
+      number: 3000
+      name: http
+  mysql:
+    user: root
+    password: root
+    database: mydatabase
+  service:
+    name: api-load-balancer
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 3000
+      nodePort: 30000
+data:
+  name: data
+  container:
+    image: eon01/quotes-data:v1
+    name: mysql
+    env:
+    - name: "MYSQL_USER"
+      value: "root"
+    - name: "MYSQL_DATABASE"
+      value: "mydatabase"
+    port:
+      containerPort: 3306
+      name: mysql
+    volumeMounts:
+      name: mysql-persistent-storage
+      mountPath: /var/lib/mysql
+      subPath: mysql
+    volume:
+      name: mysql-persistent-storage
+      persistentVolumeClaim:
+        claimName: mysql-pv
+  service:
+    name: data
+    port: 3306
+    clusterIP: None
+  pvc:
+    name: mysql-pv
+    resources:
+      requests:
+        storage: 10Gi

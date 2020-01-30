@@ -1,0 +1,24 @@
+- name: Template tfvars
+  template:
+    src: templates/tfvars.j2
+    dest: "{{ playbook_dir }}/plan/env.tfvars"
+
+- name: Create a cluster
+  shell: |
+    export GOOGLE_APPLICATION_CREDENTIALS={{ playbook_dir }}/plan/auth/serviceaccount.json
+    cd {{ playbook_dir }}/plan;
+    terraform workspace new {{ env }}
+    terraform workspace select {{ env }}
+    terraform init -backend-config "bucket={{ terraform['%s' | format(env)].bucket }}";
+    terraform plan -var-file=env.tfvars;
+    terraform apply -var-file=env.tfvars -auto-approve -refresh=true
+  when: (operation == "create")
+
+- name: Destroy a cluster
+  shell: |
+    export GOOGLE_APPLICATION_CREDENTIALS={{ playbook_dir }}/plan/auth/serviceaccount.json
+    cd {{ playbook_dir }}/plan;
+    terraform workspace new {{ env }}
+    terraform workspace select {{ env }}
+    terraform destroy -var-file=env.tfvars -auto-approve
+  when: (operation == "destroy")

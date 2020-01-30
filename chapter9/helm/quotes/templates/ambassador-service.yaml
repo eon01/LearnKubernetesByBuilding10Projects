@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambassador
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  ports:
+   - port: 80
+     protocol: TCP
+     targetPort: 8080
+  selector:
+    service: ambassador
+  loadBalancerIP: 34.77.129.24	#change me

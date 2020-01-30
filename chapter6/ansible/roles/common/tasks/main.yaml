@@ -1,0 +1,14 @@
+---
+- name: Create the file '/tmp/test.txt' containing "success"
+  import_tasks: success.yaml
+
+- name: Create the file '/tmp/hostname.txt' containing the hostname
+  import_tasks: hostname.yaml
+
+- name: Create the file '/tmp/custom.txt' containing a custom value that we define
+  import_tasks: custom.yaml
+
+- name: Template a file to /tmp/test.conf
+  template:
+    src: templates/test.j2
+    dest: /tmp/test.conf

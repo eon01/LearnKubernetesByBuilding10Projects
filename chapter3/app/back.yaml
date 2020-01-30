@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api
+  name: back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - image: eon01/quotes-back:v1
+        name: back
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "mysql+pymysql://root:root@data:3306/mydatabase"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-load-balancer
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
+    nodePort: 30000
+  selector:
+    app: api
+  type: LoadBalancer

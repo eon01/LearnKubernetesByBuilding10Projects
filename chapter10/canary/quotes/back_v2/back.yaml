@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: back
+  name: back-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back
+  template:
+    metadata:
+      labels:
+        app: back
+        version: v2
+    spec:
+      containers:
+      - image: eon01/quotes-back:v2
+        name: back-2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "mysql+pymysql://root:root@data-2:3306/mydatabase-2"
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: back-service-2
+#   labels:
+#     app: back
+#     version: v2
+# spec:
+#   ports:
+#   - name: http
+#     port: 80
+#     targetPort: 3000
+#   selector:
+#     app: back

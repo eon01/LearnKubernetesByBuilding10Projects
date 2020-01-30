@@ -1,0 +1,23 @@
+---
+- name: This is a basic example that create a file with its content
+
+  hosts: localhost
+
+  vars:
+    my_var: "my_value"
+
+  tasks:
+    - name: Create the file '/tmp/test.txt' containing "success".
+      copy:
+        content: "success"
+        dest: /tmp/test.txt
+
+    - name: Create the file '/tmp/hostname.txt' containing the hostname.
+      copy:
+        content: "{{ lookup('env','HOSTNAME') }}"
+        dest: /tmp/hostname.txt
+
+    - name: Create the file '/tmp/custom.txt' containing a custom value that we define.
+      copy:
+        content: "{{ my_var }}"
+        dest: /tmp/custom.txt

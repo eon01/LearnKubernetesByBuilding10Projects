@@ -1,0 +1,11 @@
+credentials = "{{ terraform['%s' | format(env)].credentials }}"
+project = "{{ terraform['%s' | format(env)].project }}"
+region = "{{ terraform['%s' | format(env)].region }}"
+cluster_name = "{{ terraform['%s' | format(env)].cluster_name }}"
+network = "{{ terraform['%s' | format(env)].network }}"
+initial_node_count = {{ terraform['%s' | format(env)].initial_node_count }}
+node_name = "{{ terraform['%s' | format(env)].node_name }}"
+node_count = {{ terraform['%s' | format(env)].node_count }}
+preemptible = {{ terraform['%s' | format(env)].preemptible }}
+machine_type = "{{ terraform['%s' | format(env)].machine_type }}"
+bucket = "{{ terraform['%s' | format(env)].bucket }}"

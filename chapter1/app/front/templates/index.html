@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="block1">
+<h1>Hello {{name}}!</h1>
+  <h2>This quote is for you...</h2>
+  <p>
+{{ quote }}
+  </p>
+<img style="width:50px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Kubernetes_logo_without_workmark.svg/1200px-Kubernetes_logo_without_workmark.svg.png">
+</div>
+
+
+
+<div>
+<br>This page calls the API container (GET) to get a random quote each time.<br> If you would like to post a new quote use:<br><code> curl -X POST  http://0.0.0.0:3000/api/v1/set-quote?quote="insert quote here"</code><br>
+</div>
+{% endblock %}

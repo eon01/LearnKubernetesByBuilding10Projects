@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: back
+  name: back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back
+  template:
+    metadata:
+      labels:
+        app: back
+    spec:
+      containers:
+      - image: eon01/quotes-back:v1
+        name: back
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "mysql+pymysql://root:root@data:3306/mydatabase"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: back-service
+  labels:
+    app: back
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+  selector:
+    app: back
